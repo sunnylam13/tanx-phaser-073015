@@ -1,10 +1,10 @@
 # TANX PHASER GAME 073015
 
-Creating a 2D tank game with aiming physics for experimentation...
+Creating a 2D tank game similar to Scorched Earth/Worms with aiming physics for experimentation...
 
 ## LINKS
 
-
+[Git Repo](https://github.com/sunnylam13/tanx-phaser-073015)
 
 ## RESOURCES
 

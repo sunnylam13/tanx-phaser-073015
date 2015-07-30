@@ -1,25 +1,25 @@
 {
-  "name": "3D.holocron.053015",
+  "name": "tanx.phaser.073015.1",
   "version": "1.0.0",
-  "description": "3D Holocron Project",
+  "description": "TANX PHASER GAME 073015",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sunnylam13/3D-Holocron-053015.git"
+    "url": "git+https://github.com/sunnylam13/tanx-phaser-073015.git"
   },
   "keywords": [
-    "cube",
     "animated",
-    "3D",
-    "image",
-    "gallery"
+    "2D",
+    "game",
+    "phaser",
+    "framework"
   ],
   "author": "Sunny Lam",
   "license": "MIT",
-  "homepage": "https://github.com/sunnylam13/3D-Holocron-053015#readme",
+  "homepage": "https://github.com/sunnylam13/tanx-phaser-073015#readme",
   "devDependencies": {
     "browser-sync": "^2.7.3",
     "gulp": "^3.8.11",
