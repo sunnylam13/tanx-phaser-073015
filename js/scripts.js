@@ -30,6 +30,13 @@
 		this.fireButton = null;
 	}
 
+	/* 
+	* the functions or methods were added to the prototype of the PhaserGame
+	* this allows you to use name spacing without issues unlike the simple Phaser exercise
+	* 
+	*/
+
+
 	tanx1.PhaserGame.prototype = {
 
 		init: function () {
@@ -271,6 +278,7 @@
 
 	}
 
+	// here we add the entire game object to the game state
 	tanx1.game.state.add('Game',tanx1.PhaserGame,true);
 
 ////////////////////////////////////////////
