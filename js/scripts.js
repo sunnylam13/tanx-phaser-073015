@@ -168,7 +168,7 @@
 
 			// now work out where the END of the turret is
 			var p = new Phaser.Point(this.turret.x, this.turret.y);
-			p.rotate(p.x, p.y, this.turret.rotation, false; 34);
+			p.rotate(p.x, p.y, this.turret.rotation, false, 34);
 
 			// and position the flame sprite there
 			this.flame.x = p.x;
@@ -271,7 +271,7 @@
 
 	}
 
-	tanx1.game.state.add('Game',PhaserGame,true);
+	tanx1.game.state.add('Game',tanx1.PhaserGame,true);
 
 ////////////////////////////////////////////
 // 		END VARIABLES
