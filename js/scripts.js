@@ -40,9 +40,14 @@
 	tanx1.PhaserGame.prototype = {
 
 		init: function () {
+			// Because this game uses pixel art we're going to use a rounded canvas renderer
+			// This will stop Phaser from rendering graphics at sub-pixel locations, keeping them nice and crisp
 			this.game.renderer.renderSession.roundPixels = true;
-			this.game.world.setBounds(0,0,992,480);
 
+			// set the game world to be 992 pixels wide
+			// enable physics
+			// setting a gravity value of 200
+			this.game.world.setBounds(0,0,992,480);
 			this.physics.startSystem(Phaser.Physics.ARCADE);
 			this.physics.arcade.gravity.y = 200;
 		},
@@ -78,6 +83,7 @@
 				* grant them physics
 				*/
 
+				// We also create a Group of targets to shoot. This is a standard Phaser Group with Arcade Physics enabled on it.
 				this.targets = this.add.group(this.game.world,'targets',false,true,Phaser.Physics.ARCADE);
 
 				// create each of the targets in the group
@@ -88,6 +94,8 @@
 				this.targets.create(900,390,'target');
 
 				// stop gravity from pulling them away
+				// However because of this we need to stop gravity from pulling the targets away
+				// NOTE:  `setAll` lets you quickly set the same property across all members of the Group. In this case we tell it to disable gravity.
 				this.targets.setAll('body.allowGravity',false);
 			// ----------------------------------------
 			// END TARGETS  ------------------
@@ -107,6 +115,14 @@
 			// ----------------------------------------
 			// TANK  ------------------
 			// ----------------------------------------
+				/* 
+				* We need to assemble the tank. 
+				* It's split into two images: the base of the tank, and the turret. 
+				* The turret is positioned against the base so it looks correct when rotating. 
+				* The area highlighted in red is where they are "joined"
+				* 
+				*/
+
 				// the body of the tank
 				this.tank = this.add.sprite(24,383,'tank');
 
@@ -171,13 +187,26 @@
 
 			// re-position the bullet where the turret is
 			// take the turrets current position x, y and apply it to the bullet
+			// starts by setting the bullet back to the turret coordinates (in case it has already been fired)
 			this.bullet.reset(this.turret.x, this.turret.y);
 
+			/* 
+			* display the 'flame' sprite when they shoot. 
+			* This is a burst of fire that emits from the end of the turrets gun then fades away
+			* We know the coordinates of the left of the turret, but what about the end?
+			* There are several ways to solve...
+			* one way is to use Point.rotate
+				* This allows you to calculate where the Point would be if it was rotated and moved from its origin. 
+				* In the code we set the rotation to match the turret, and the distance 34 pixels works for these assets
+				* The end result is that the flame effect appears at the end of the gun, regardless of its angle of rotation.
+			*/
 			// now work out where the END of the turret is
 			var p = new Phaser.Point(this.turret.x, this.turret.y);
 			p.rotate(p.x, p.y, this.turret.rotation, false, 34);
 
 			// and position the flame sprite there
+			// we apply the point rotated coordinates to the flame sprite `this.flame`
+			// we make it visible
 			this.flame.x = p.x;
 			this.flame.y = p.y;
 			this.flame.alpha = 1;
@@ -187,9 +216,11 @@
 			this.add.tween(this.flame).to( {alpha: 0},100,"Linear",true );
 
 			// so we can see what's going on when the bullet leaves the screen
+			// At the same time we tell the Camera to track the bullet as it flies
 			this.camera.follow(this.bullet);
 
 			// our launch trajectory is based on the angle of the turret and the power
+			// will calculate the velocity need for these two factors and inject them into the velocity of the bullet
 			this.physics.arcade.velocityFromRotation(this.turret.rotation, this.power, this.bullet.body.velocity);
 		},
 
@@ -214,7 +245,13 @@
 			* stops the camera following
 			* tweens the camera back to the tank
 			* have to put in its own method as it's called from several places
-			* 
+			*
+			* In the `update` method we check if the bullet exists (i.e. is in flight), and if so we perform an overlap check between it and the targets. 
+				* If they overlap the target is killed and the bullet removed
+				* see:  @method hitTarget
+			* stop the Camera tracking the bullet so that the tween works. 
+				* The tween pauses for 1 second then tweens the Camera back to look at the tank again ready for the next shot. 
+				* WARNING:  If you don't stop the Camera following the tween...  it will seem to fail, because Camera tracking takes priority over positioning of it
 			*/
 
 			this.bullet.kill();
@@ -259,6 +296,13 @@
 				// ----------------------------------------
 				// ANGLE CHANGE  ------------------
 				// ----------------------------------------
+					/* 
+					* This is done with a check to ensure it is kept within limits and then we change the Sprite.angle property of the turret. 
+						* `this.turret.angle`
+					* The default anchor of the turret means this rotation works correctly with no further settings.
+					* 
+					*/
+
 					// allow them to set the angle, between -90 (straight up) and 0 (facing to the right)
 					if (this.cursors.up.isDown && this.turret.angle > -90) {
 						this.turret.angle--;
