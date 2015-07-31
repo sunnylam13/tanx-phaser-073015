@@ -8,6 +8,8 @@ Creating a 2D tank game similar to Scorched Earth/Worms with aiming physics for 
 
 ## RESOURCES
 
+[Tanx Tutorial](http://phaser.io/tutorials/coding-tips-001)
+
 [Tanx Example Part 1](https://github.com/photonstorm/phaser-coding-tips)
 
 ## Unix Locations
