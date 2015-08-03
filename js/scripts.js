@@ -280,9 +280,21 @@
 			* 
 			*/
 
+			// explosion effects enabled from @method create
+			/* 
+			* The emitter is positioned on the center of the target Sprite and set to explode. 
+			* The first parameter tells the flames to live for 2 seconds, the 2nd to explode 10 of them at once. 
+			* Then we kill the target and the bullet.
+			* 
+			*/
+
+			this.emitter.at(target);
+			this.emitter.explode(2000,10);
 
 			target.kill();
-			this.removeBullet();
+
+			// You may notice that this call to removeBullet passes a value of true. This tells the Camera tween to delay for a little longer before returning to the tank. It gives you a little more time to enjoy the effect
+			this.removeBullet(true);
 		},
 
 		removeBullet: function () {
