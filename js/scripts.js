@@ -23,6 +23,9 @@
 		this.background = null;
 		this.targets = null;
 
+		this.land = null;
+		this.emitter = null;
+
 		this.power = 300;
 		this.powerText = null;
 
@@ -132,6 +135,27 @@
 				this.land.addToWorld(); // add it to the game world
 			// ----------------------------------------
 			// END LANDSCAPE  ------------------
+			// ----------------------------------------
+
+			// ----------------------------------------
+			// EMITTER/EXPLOSION EFFECT  ------------------
+			// ----------------------------------------
+				/* 
+				* small burst of particle when a target is hit
+				* It's re-using the flame.png which we use for the tank fire effect. 
+				* Rotation is disabled by calling setRotation with no parameters. 
+				* When the particles emit they'll pick a random x velocity between -120 and 120, and a vertical one between -100 and -200 (thrusting up into the air).
+				* To activate the emitter we call it in the hitTarget method or @method hitTarget
+				*/
+
+				this.emitter = this.add.emitter(0,0,30);
+				this.emitter = makeParticles('flame');
+				this.emitter = setXSpeed(-120,120);
+				this.emitter = setYSpeed(-100,-200);
+				this.emitter.setRotation();
+
+			// ----------------------------------------
+			// END EMITTER/EXPLOSION EFFECT  ------------------
 			// ----------------------------------------
 
 			// ----------------------------------------
