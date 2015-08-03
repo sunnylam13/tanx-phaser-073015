@@ -68,6 +68,7 @@
 			this.load.image('background', 'assets/background.png');
 			this.load.image('flame', 'assets/flame.png');
 			this.load.image('target', 'assets/target.png');
+			this.load.image('land','assets/land.png')
 
 			//  Note: Graphics from Amiga Tanx Copyright 1991 Gary Roberts
 		},
@@ -149,9 +150,9 @@
 				*/
 
 				this.emitter = this.add.emitter(0,0,30);
-				this.emitter = makeParticles('flame');
-				this.emitter = setXSpeed(-120,120);
-				this.emitter = setYSpeed(-100,-200);
+				this.emitter.makeParticles('flame');
+				this.emitter.setXSpeed(-120,120);
+				this.emitter.setYSpeed(-100,-200);
 				this.emitter.setRotation();
 
 			// ----------------------------------------
@@ -297,7 +298,7 @@
 			this.removeBullet(true);
 		},
 
-		removeBullet: function () {
+		removeBullet: function (hasExploded) {
 			/* 
 			* removes the bullet
 			* stops the camera following
@@ -312,8 +313,19 @@
 				* WARNING:  If you don't stop the Camera following the tween...  it will seem to fail, because Camera tracking takes priority over positioning of it
 			*/
 
+			if (typeof hasExploded === 'undefined') {
+				hasExploded = false;
+			}
+
 			this.bullet.kill();
 			this.camera.follow();
+
+			var delay = 1000;
+
+			if (hasExploded) {
+				delay = 2000;
+			}
+
 			this.add.tween(this.camera).to( {x: 0}, 1000, "Quint", true, 1000 );
 		},
 
