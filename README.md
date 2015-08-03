@@ -14,6 +14,9 @@ Creating a 2D tank game similar to Scorched Earth/Worms with aiming physics for 
 
 [Phaser Coding Tips Tutorials](https://github.com/photonstorm/phaser-coding-tips)
 
+[Phaser Coding Tips Tutorials Git Repo](https://github.com/photonstorm/phaser-coding-tips)
+
 ## Unix Locations
 cd ~/google\ drive/Programming\ Projects/tanx.phaser.073015.1/
 
+cd ~/google\ drive/Programming\ Projects/phaser-coding-tips/

@@ -70,6 +70,11 @@
 		},
 
 		create: function () {
+
+			/* 
+			* Monday, August 3, 2015 12:58 PM:  difference is that the targets are now positioned so they lay on the new landscape
+			* 
+			*/
 			
 			// simple yet pretty background
 			this.background = this.add.sprite(0,0,'background');
@@ -110,6 +115,23 @@
 				this.physics.arcade.enable(this.bullet);
 			// ----------------------------------------
 			// END BULLETS  ------------------
+			// ----------------------------------------
+
+			// ----------------------------------------
+			// LANDSCAPE  ------------------
+			// ----------------------------------------
+				/* 
+				* the land is a bitmap data the size of the game world...
+				* we draw the land.png to it and then add it to the world
+				* This PNG has the landscape drawn on a transparent background
+				* Internally this creates a new Sprite object, sets the BitmapData to be its texture and adds it to the Game World at 0, 0 (because we didn't specify any other location).
+				*/
+				this.land = this.add.bitmapData(992,480);
+				this.land.draw('land'); // hand it a name
+				this.land.update(); // have to update it when it's destroyed
+				this.land.addToWorld(); // add it to the game world
+			// ----------------------------------------
+			// END LANDSCAPE  ------------------
 			// ----------------------------------------
 
 			// ----------------------------------------
@@ -259,6 +281,56 @@
 			this.add.tween(this.camera).to( {x: 0}, 1000, "Quint", true, 1000 );
 		},
 
+		bulletVsLand: function () {
+			/* 
+			* called by update() if the bullet is in flight
+			* @method bulletVsLand
+			* 
+			* starts with a simple bounds check
+			* 
+			*/
+
+			// simple bounds check
+			if (this.bullet.x < 0 || this.bullet.x > this.game.world.width || this.bullet.y > this.game.height) {
+				this.removeBullet();
+				return;
+			}
+
+			// Because we're going to be doing a pixel color look-up on the BitmapData we have to floor the bullet coordinates
+			var x = Math.floor(this.bullet.x);
+			var y = Math.floor(this.bullet.y);
+			// Once done we can use the BitmapData.getPixel method to get a Color object for the given pixel. 
+			// This is done every frame as the bullet flies through the air, we sample the pixel color beneath it.
+			var rgba = this.land.getPixel(x,y);
+
+			if (rgba.a > 0) {
+
+				/* 
+				* Our PNG is a landscape drawn on a transparent background, so all we need to do is check that we're over a pixel that has an alpha value greater than zero. 
+					* If this is the case we blow a chunk out of the land.
+					* done by setting the destination-out blend mode
+					* If you draw on a canvas with this blend mode you can effectively "remove" parts of it. In this case we'e drawing a 16px sized circle where the bullet landed. Combine this with the blend mode and you punch a small hole into the land.
+				* Options
+					* vary the circle size 
+					* draw an entirely different shape
+				* 
+				*/
+				
+				this.land.blendDestinationOut();
+				this.land.circle(x,y,16,'rgba(0,0,0,255');
+
+				// The final few lines reset the blend mode and call BitmapData.update which tells it to rescan the pixel data and render the new scene.
+				this.land.blendReset();
+				// Finally the bullet is removed, its job done.
+				this.land.update();
+
+				// you can also combine the 4 lines with piping
+				// this.land.blendDestinationOut().circle(x, y, 16, 'rgba(0, 0, 0, 255').blendReset().update();
+				
+				this.removeBullet();
+			}
+		},
+
 		update: function () {
 			/* 
 			* Core update loop
@@ -274,8 +346,28 @@
 					this.removeBullet();
 				}
 				else {
-					// bullet vs the Targets
-					this.physics.arcade.overlap(this.bullet, this.targets, this.hitTarget,null,this);
+					// ----------------------------------------
+					// BULLET VS TARGETS  ------------------
+					// ----------------------------------------
+						// bullet vs the Targets
+						this.physics.arcade.overlap(this.bullet, this.targets, this.hitTarget,null,this);
+					// ----------------------------------------
+					// END BULLET VS TARGETS  ------------------
+					// ----------------------------------------
+				
+					// ----------------------------------------
+					// BULLET VS LAND  ------------------
+					// ----------------------------------------
+						/* 
+						* now we need to check if the bullet hits the land
+						* we assign the impact effects to a method of its own
+						*/
+
+						this.bulletVsLand();
+
+					// ----------------------------------------
+					// END BULLET VS LAND  ------------------
+					// ----------------------------------------	
 				}
 			}
 			else {
